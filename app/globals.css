@@ -1,0 +1,187 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ─────────────────────────────────────────────────────────────────
+   @font-face — custom fonts for the public menu page.
+   Files live in /public/fonts/ — Next.js serves them at /fonts/*.
+   ───────────────────────────────────────────────────────────────── */
+@font-face {
+  font-family: 'Gochi Hand';
+  src: url('/fonts/GochiHand-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+  /* Latin only — Gochi Hand has no Persian glyphs. */
+  unicode-range: U+0000-00FF, U+2000-206F;
+}
+
+@font-face {
+  font-family: 'NeveshtFaNum';
+  src: url('/fonts/NeveshtFaNum-Black.ttf') format('truetype');
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+  /* Persian/Arabic only — keep Latin out so it falls back cleanly. */
+  unicode-range: U+0600-06FF, U+0750-077F, U+FB50-FDFF, U+FE70-FEFF;
+}
+
+@font-face {
+  font-family: 'IRANMarker';
+  src: url('/fonts/IRANMarker.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'HastiHeavy';
+  src: url('/fonts/Hasti-HeavyR.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'BlockFD';
+  src: url('/fonts/BlockFD-VF.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ─── Design tokens ─────────────────────────────────────────── */
+@layer base {
+  :root {
+    color-scheme: light;
+    --background: 30 9% 98%;
+    --foreground: 24 10% 10%;
+    --border: 24 6% 90%;
+    --muted: 30 9% 96%;
+    --muted-foreground: 25 5% 45%;
+    --primary: 24 10% 10%;
+    --primary-foreground: 0 0% 100%;
+    --success: 142 71% 30%;
+    --success-foreground: 0 0% 100%;
+    --success-subtle: 138 76% 97%;
+    --danger: 350 89% 41%;
+    --danger-foreground: 0 0% 100%;
+    --danger-subtle: 356 100% 97%;
+    --warning: 32 95% 44%;
+    --warning-foreground: 0 0% 100%;
+    --warning-subtle: 48 100% 96%;
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    --background: 24 10% 8%;
+    --foreground: 30 9% 96%;
+    --border: 24 6% 18%;
+    --muted: 24 6% 14%;
+    --muted-foreground: 24 5% 65%;
+    --primary: 0 0% 100%;
+    --primary-foreground: 24 10% 10%;
+  }
+
+  html,
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: 'ss01', 'ss02';
+    letter-spacing: 0;
+  }
+
+  body {
+    @apply font-sans antialiased;
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   Language-scoped typography (PUBLIC MENU PAGE ONLY)
+   The custom display fonts (Gochi Hand / NeveshtFaNum) are aggressive
+   editorial faces — beautiful for the menu but a terrible UX for the
+   admin panel's forms, labels, and tables. So we scope the override
+   to body.is-menu only.
+   ───────────────────────────────────────────────────────────────── */
+@layer base {
+  html[data-lang='en'] body.is-menu {
+    font-family: 'Gochi Hand', system-ui, sans-serif !important;
+    letter-spacing: 0.01em;
+  }
+
+  /* Persian menu font is chosen by the admin and applied via data-fa-font
+     on <html>. Each font gets its own line-height so heavy faces breathe. */
+  html[data-lang='fa'][data-fa-font='NeveshtFaNum'] body.is-menu {
+    font-family: 'NeveshtFaNum', system-ui, sans-serif !important;
+    line-height: 1.6;
+  }
+  html[data-lang='fa'][data-fa-font='IRANMarker'] body.is-menu {
+    font-family: 'IRANMarker', system-ui, sans-serif !important;
+    line-height: 1.7;
+  }
+  html[data-lang='fa'][data-fa-font='HastiHeavy'] body.is-menu {
+    font-family: 'HastiHeavy', system-ui, sans-serif !important;
+    line-height: 1.7;
+  }
+  html[data-lang='fa'][data-fa-font='BlockFD'] body.is-menu {
+    font-family: 'BlockFD', system-ui, sans-serif !important;
+    line-height: 1.8;
+  }
+  /* Fallback if data-fa-font is missing/unknown. */
+  html[data-lang='fa']:not([data-fa-font]) body.is-menu {
+    font-family: 'NeveshtFaNum', system-ui, sans-serif !important;
+    line-height: 1.6;
+  }
+
+  /* The language toggle always uses a neutral system stack. */
+  .lang-toggle,
+  .lang-toggle * {
+    font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif !important;
+    letter-spacing: normal;
+  }
+
+  /* The admin panel uses Vazirmatn (Tailwind's font-sans token resolves
+     to var(--font-vazir) per the user's tailwind.config.ts). We don't
+     load Vazirmatn here — the user already configures it via next/font.
+     If --font-vazir is undefined the system stack kicks in, which is
+     fine for an internal tool. */
+  body.is-admin {
+    font-family: var(--font-vazir), ui-sans-serif, system-ui, sans-serif;
+    letter-spacing: 0;
+  }
+}
+
+/* ─── Scrollbar ─────────────────────────────────────────────── */
+@layer base {
+  ::-webkit-scrollbar { width: 10px; height: 10px; }
+  ::-webkit-scrollbar-thumb {
+    background: #d6d3d1;
+    border-radius: 999px;
+    border: 2px solid transparent;
+    background-clip: content-box;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #a8a29e;
+    background-clip: content-box;
+    border: 2px solid transparent;
+  }
+  ::-webkit-scrollbar-track { background: transparent; }
+}
+
+/* ─── Utilities ─────────────────────────────────────────────── */
+@layer utilities {
+  .tabular-nums { font-variant-numeric: tabular-nums; }
+}
+
+select {
+  background-position: left 0.6rem center;
+}
+
+/* ─── Print styles ──────────────────────────────────────────── */
+@media print {
+  @page { size: A4; margin: 1.5cm 2cm; }
+  body { font-size: 12pt; color: #000; background: #fff; }
+  .print\:hidden { display: none !important; }
+  .hidden.print\:block { display: block !important; }
+  table { page-break-inside: auto; }
+  tr { page-break-inside: avoid; }
+}
